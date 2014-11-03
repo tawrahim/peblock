@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 	
@@ -23,6 +24,8 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		final TextView Status = (TextView) findViewById(R.id.STATUStext);
+		final TextView carStat = (TextView) findViewById(R.id.carStat);
 		
 		boolean connected = PebbleKit.isWatchConnected(getApplicationContext());
 		Log.e("pebblelock", "hey!");
@@ -31,6 +34,8 @@ public class MainActivity extends Activity {
 		PebbleKit.registerPebbleConnectedReceiver(getApplicationContext(), new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
+				Status.setText("PEBBLE CONNECTED!");
+				carStat.setText("CAR UNLOCKED!");
 				Log.i("pebblelock", "pebble connected");
 				PebbleKit.startAppOnPebble(getApplicationContext(), PEBLOCK_UUID);
 				PebbleDictionary TEXT = new PebbleDictionary();
@@ -44,10 +49,13 @@ public class MainActivity extends Activity {
 		PebbleKit.registerPebbleDisconnectedReceiver(getApplicationContext(), new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
+				Status.setText("PEBBLE DISCONNECTED!");
+				carStat.setText("CAR LOCKED!");
 				Log.e("pebblelock", "pebble disconnected");
 				PebbleKit.startAppOnPebble(getApplicationContext(), PEBLOCK_UUID);
 				PebbleDictionary TEXT = new PebbleDictionary();
 				TEXT.addString(0, locked);
+				
 			}
 		});
 
